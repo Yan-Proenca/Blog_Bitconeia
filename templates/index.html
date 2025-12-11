@@ -1,0 +1,220 @@
+{% extends 'base.html'%}
+{% block conteudo %}
+    <div class="inicio">
+            {% if 'user' in session and 'admin' not in session %}        
+            <div class="form-post">
+                <form action="{{ '/editarpost/'+ post.idPost|string if post else '/novopost' }}" method="post">
+                    <div class="form-post-header">
+                        <div class="usuario-info">
+                            <img src="../static/uploads/{{ session['foto'] }}" 
+                                class="foto-perfil-form">
+                            <p>Olá, {{ session['user'] }}! O que gostaria de postar hoje?</p>
+                        </div>
+                    </div>
+                    <input type="text" name="titulo" placeholder="Título de Postagens"  maxlength="60" value="{{ post.titulo if post else '' }}" required>
+                    <textarea name="conteudo" id="" placeholder="Escreva aqui! (1000 caracteres)" required maxlength="1000">{{ post.conteudo if post else '' }}</textarea>
+                    <button type="submit">{{ 'Salvar alterações' if post else 'Postar' }}</button>
+                </form>
+            </div>
+            {% endif %}
+        
+        <div class="col-centro">
+            
+             <div class="feed">
+                {% if not postagens%}
+                <p>Ainda não temos posts! Volte mais tarde</p>
+                {% else %}
+                {% for post in postagens %}
+                <div class="post">
+                    <div class="post_header">
+                        <div class="post_usuario">
+                            <img src="../static/uploads/{{ post.foto }}" class="post-foto-user">
+                            <p>{{ post.user }}</p>
+                        </div>
+                        <div class="post_time">
+                            <p class="post_data">{{ post.dataPost.strftime("%d/%m/%y") }}</p> 
+                            <p class="post_time">{{ post.dataPost.strftime("%H:%M") }}</p>
+                        </div>
+                    </div>
+                    <div class="post_content">
+                        <h2>{{ post.titulo }}</h2>
+                        <p>{{ post.conteudo }}</p>
+                    </div>
+                    {% if post.idUsuario == session.get('idUsuario') or 'admin' in session %}
+                    <div class="post-button">
+                        {% if 'admin' not in session and post.idUsuario == session.get('idUsuario') %}                        
+                        <a href="/editarpost/{{ post.idPost }}"><img src="../static/img/edit.png" alt="Editar" width="15px"></a>
+                        {% endif %}
+                        <a href="/excluirpost/{{ post.idPost }}"><img src="../static/img/delete.png" alt="Excluir" width="15px" onclick="return confirm('Confirma a exclusão?')"></a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+            <div class="coluna_direita">
+                <!-- Carrossel de Memes -->
+                <div class="meme-carousel">
+                    <h3>Memes do Dia 🎭</h3>
+                    <div class="carousel-container">
+                        <div class="carousel-track">
+                            <!-- As imagens serão inseridas via JavaScript -->
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev-btn">‹</button>
+                        <div class="carousel-dots"></div>
+                        <button class="carousel-btn next-btn">›</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+
+<script>
+function initMemeCarousel() {
+    const track = document.querySelector('.carousel-track');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    
+    // Lista de memes Bitcoin - VERIFIQUE AS EXTENSÕES!
+    const memes = [
+        {
+            image: '../static/img/memes/meme_bitcoin1.png',
+            title: 'Quando a mina ta afim mas você é investidor 🎉'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin2.png',
+            title: 'Quando eu sei das tecnologias'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin3.png',
+            title: 'É dificil... mas vale a pena💸'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin4.png',
+            title: 'A utopia do Bitcoinismo'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin5.png',
+            title: 'Power for Bitcoin!'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin6.png',
+            title: 'Bitcoiner o novo gênio 🚀'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin7.png',
+            title: 'Eu tenho 1 caminho para o Bitcoin'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin8.png',
+            title: 'Tem que honra e me obedeçe magnata'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin9.png',
+            title: 'Pensei fora da caixa'
+        },
+        {
+            image: '../static/img/memes/meme_bitcoin10.jpg',
+            title: 'Que decisão ez'
+        }
+    ];
+    
+    let currentSlide = 0;
+    
+    // Criar slides dos memes
+    function createSlides() {
+        // Mostrar loading primeiro
+        track.innerHTML = '<div class="carousel-loading">Carregando memes Bitcoin... 🚀</div>';
+        
+        setTimeout(() => {
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            
+            memes.forEach((meme, index) => {
+                // Criar slide
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <img src="${meme.image}" alt="${meme.title}" class="meme-image" 
+                         onerror="this.src='../static/img/images.png'; this.alt='Meme não encontrado'">
+                    <div class="meme-title">${meme.title}</div>
+                `;
+                track.appendChild(slide);
+                
+                // Criar dots
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+            
+            updateCarousel();
+        }, 500);
+    }
+    
+    // Atualizar carrossel
+    function updateCarousel() {
+        if (track.children.length > 0) {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Atualizar dots
+            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+    }
+    
+    // Ir para slide específico
+    function goToSlide(slideIndex) {
+        currentSlide = slideIndex;
+        updateCarousel();
+    }
+    
+    // Próximo slide
+    function nextSlide() {
+        if (memes.length > 0) {
+            currentSlide = (currentSlide + 1) % memes.length;
+            updateCarousel();
+        }
+    }
+    
+    // Slide anterior
+    function prevSlide() {
+        if (memes.length > 0) {
+            currentSlide = (currentSlide - 1 + memes.length) % memes.length;
+            updateCarousel();
+        }
+    }
+    
+    // Event listeners
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    
+    // Auto-play
+    let autoPlayInterval = setInterval(nextSlide, 10000);
+    
+    // Pausar auto-play quando hover
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', () => {
+            clearInterval(autoPlayInterval);
+        });
+        
+        carouselContainer.addEventListener('mouseleave', () => {
+            autoPlayInterval = setInterval(nextSlide, 10000);
+        });
+    }
+    
+
+    
+    createSlides();
+}
+
+document.addEventListener('DOMContentLoaded', initMemeCarousel);
+</script>
+{% endblock %}

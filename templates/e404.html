@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<main class="error-main">
+    <div class="erro-container">
+        <h1>404</h1>
+        <img src="../static/img/erro404.png" alt="Erro 404">
+        <h2>Página Não Encontrada</h2>
+        <p>Desculpe, a página que você está procurando não existe ou foi movida.</p>
+        <a href="{{ url_for('index') }}" class="btn-voltar">Voltar para a página inicial</a>
+    </div>
+</main>
+{% endblock %}

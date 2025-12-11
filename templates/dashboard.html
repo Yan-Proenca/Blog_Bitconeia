@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div id="dashboard">
+    <div class="dados">
+        <p>Total de USUÁRIOS: {{ total_usuarios[0] }}</p>
+        <p>Total de POSTS: {{ total_posts[0] }}</p>
+    </div>
+    <div id="info">
+        <div class="col-info usuarios">
+            <h3>👥 Gestão de Usuários</h3>
+            <div class="tabela-container">
+                <table class="tabela-usuarios">
+                        <tr>
+                            <th class="acoes-th">Ações</th>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>User</th>
+                            <th>Reset Senha</th>
+                            <th>Cadastro</th>
+                            <th>Status</th>
+                        </tr>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr class="user-row" > 
+                            <td class="acoes-td">
+                                <a href="/usuario/excluir/{{u.idUsuario}}" class="btn-acao btn-excluir" title="Excluir Usuário" onclick="return confirm('Confirma a exclusão do usuário {{ u.nome }}?')">
+                                    🗑️ </a>
+                            </td>
+                            <td data-label="ID">{{ u.idUsuario }}</td>
+                            <td data-label="Nome" class="user-nome">{{ u.nome }}</td>
+                            <td data-label="Username">{{ u.user }}</td>
+                            <td data-label="Reset Senha">
+                                <a href="/usuario/reset/{{u.idUsuario}}" class="btn-acao btn-reset" title="Resetar Senha">🔄</a>
+                            </td>
+                            <td data-label="Cadastro" class="data-cadastro">{{ u.dataCadastro.strftime("%d/%m/%y %H:%M") }}</td>
+                            <td data-label="Status">
+                                <a href="/usuario/status/{{ u.idUsuario }}">
+                                    <span class="status-badge {% if u.ativo %}ativo{% else %}banido{% endif %}">
+                                        {% if u.ativo %}Ativo{% else %}Banido{% endif %}
+                                    </span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="no-data">Nenhum usuário encontrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="col-info posts">
+            <h3>📝 Posts Recentes</h3>
+            {% for p in posts %}
+                <p><a href="/excluirpost/{{p.idPost}}" class="link-excluir-post"><img src="../static/img/delete.png" alt="Excluir" width="15px" onclick="return confirm('Confirma a exclusão?')"></a>  <span class="post-id">{{p.idPost}}</span> - <span class="post-titulo">{{p.titulo}}</span> - <span class="post-conteudo">{{ p.conteudo | truncate(30) }}</span></p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<div class="login">
+    <div id="login" class="login-container">
+        <h2>Login</h2>
+        {% with msg = get_flashed_messages()|first %}
+                    {% if msg %}
+                       <p class="mensagem">{{ msg }}</p>
+                    {% endif %}
+                {% endwith %}
+            <form action="/login" method="post" class="form-login">
+                <input type="text" name="user" placeholder="Usuário" autocomplete="false" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+                <p>Não tem uma conta? <a href="/cadastro">Cadastre aqui!</a></p>
+            </form>
+    </div>
+</div>
+{% endblock %}

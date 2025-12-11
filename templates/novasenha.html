@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+    <div class="nova-senha-container">
+        <h2>Altere a sua senha</h2>
+        <h2>É obrigatório</h2>
+        <form action="/usuario/novasenha" method="post" id="form-nova-senha">
+            <label for="senha">Nova senha:</label>
+            <input type="password" name="senha" id="senha" required maxlength="30">
+            <div class="senha-strength">
+                <div class="senha-strength-bar"></div>
+            </div>
+            <div class="mensagem-senha" id="mensagem-forca"></div>
+            
+            <label for="confirma_senha">Confirma nova senha:</label>
+            <input type="password" name="confirma_senha" id="confirma_senha" required>
+            <div class="mensagem-senha erro" id="mensagem-confirma"></div>
+            
+            <button type="submit" class="btn-submit">Cadastrar nova senha</button>
+            <a href="/">
+                <button type="button">Cancelar</button>
+            </a>
+        </form>
+        <a href="{{ url_for('index') }}" class="btn-voltar">Voltar para a página inicial</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const senhaInput = document.getElementById('senha');
+            const confirmaInput = document.getElementById('confirma_senha');
+            const form = document.getElementById('form-nova-senha');
+            const mensagemForca = document.getElementById('mensagem-forca');
+            const mensagemConfirma = document.getElementById('mensagem-confirma');
+            const strengthBar = document.querySelector('.senha-strength-bar');
+            const strengthContainer = document.querySelector('.senha-strength');
+            
+            // Verificar força da senha
+            senhaInput.addEventListener('input', function() {
+                const senha = this.value;
+                let forca = 0;
+                let mensagem = '';
+                
+                if (senha.length >= 6) forca++;
+                if (senha.match(/[a-z]/) && senha.match(/[A-Z]/)) forca++;
+                if (senha.match(/\d/)) forca++;
+                if (senha.match(/[^a-zA-Z\d]/)) forca++;
+                
+                strengthContainer.className = 'senha-strength';
+                mensagemForca.className = 'mensagem-senha';
+                mensagemForca.style.display = 'none';
+                
+                if (senha.length > 0) {
+                    if (forca <= 2) {
+                        strengthContainer.classList.add('fraca');
+                        mensagem = 'Senha fraca';
+                        mensagemForca.classList.add('erro');
+                    } else if (forca === 3) {
+                        strengthContainer.classList.add('media');
+                        mensagem = 'Senha média';
+                        mensagemForca.classList.add('erro');
+                    } else {
+                        strengthContainer.classList.add('forte');
+                        mensagem = 'Senha forte';
+                        mensagemForca.classList.add('sucesso');
+                    }
+                    mensagemForca.textContent = mensagem;
+                    mensagemForca.style.display = 'block';
+                }
+            });
+            
+            // Verificar se as senhas coincidem
+            confirmaInput.addEventListener('input', function() {
+                if (this.value !== senhaInput.value) {
+                    mensagemConfirma.textContent = 'As senhas não coincidem';
+                    mensagemConfirma.style.display = 'block';
+                    this.classList.add('erro-shake');
+                    setTimeout(() => this.classList.remove('erro-shake'), 300);
+                } else {
+                    mensagemConfirma.style.display = 'none';
+                }
+            });
+            
+            // Validação antes do envio
+            form.addEventListener('submit', function(e) {
+                if (senhaInput.value !== confirmaInput.value) {
+                    e.preventDefault();
+                    mensagemConfirma.textContent = 'As senhas não coincidem';
+                    mensagemConfirma.style.display = 'block';
+                    confirmaInput.focus();
+                }
+            });
+        });
+    </script>
+{% endblock %}

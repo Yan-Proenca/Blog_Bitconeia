@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+     <div>   
+        <h1>500 - Erro Interno do Servidor</h1>
+        <img src="../static/img/erro500.png" alt="" width="300px">
+        <p>Desculpe, ocorreu um erro interno no servidor.</p>
+        <a href="{{ url_for('index') }}">Voltar para a página inicial</a>
+    </div>
+{% endblock %}

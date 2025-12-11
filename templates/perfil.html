@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+<div class="perfil-container">
+    <div class="perfil-navegacao">
+        <a href="/" class="btn-voltar-inicio">
+            ← 
+        </a>
+    </div>
+    
+    <div class="perfil-header">
+        <img src="../static/uploads/{{foto}}" alt="Foto de perfil de {{ nome }}" class="foto-perfil">
+        <h2 class="perfil-saudacao">Olá, {{ nome }}!</h2>
+    </div>
+    
+    <hr class="perfil-divisor">
+    
+    <div class="perfil-form-container">
+        <h3 class="perfil-titulo">Alterar dados:</h3>
+        
+        <form action="/perfil" method="post" class="perfil-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nome" class="form-label">Nome do usuário:</label>
+                <input type="text" name="nome" id="nome" value="{{ nome }}" class="form-input" maxlength="70" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="user" class="form-label">User:</label>
+                <input type="text" name="user" id="user" value="{{ user }}" class="form-input" maxlength="15" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="foto" class="form-label">Foto do perfil:</label>
+                <div class="file-upload-container">
+                    <input type="file" name="foto" id="foto" accept=".jpg, .png, .jpeg, .webp" class="file-input">
+                    <label for="foto" class="file-label">
+                        <span class="file-icon">📷</span>
+                        Escolher arquivo
+                    </label>
+                    <span class="file-name">Nenhum arquivo selecionado</span>
+                </div>
+            </div>
+            
+            <div class="form-buttons">
+                <button type="submit" class="btn-salvar">Salvar alterações</button>
+                <a href="/usuario/novasenha" class="btn-alterar-senha">Alterar senha</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('foto');
+    const fileName = document.querySelector('.file-name');
+    
+    if (fileInput && fileName) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileName.textContent = this.files[0].name;
+                fileName.classList.add('has-file');
+            } else {
+                fileName.textContent = 'Nenhum arquivo selecionado';
+                fileName.classList.remove('has-file');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

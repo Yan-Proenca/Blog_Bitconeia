@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div class="login">
+    <div id="login" class="login-container">
+        <h2>Cadastro</h2>
+            {% with msg = get_flashed_messages()|first %}
+                {% if msg %}
+                    <p class="mensagem">{{ msg }}</p>
+                {% endif %}
+            {% endwith %}
+            <form action="/cadastro" method="post" class="form-login">
+                <input type="text" name="nome" placeholder="Nome" autocomplete="off" value="" maxlength="70" required>
+                <input type="text" name="user" placeholder="Usuário" autocomplete="off" value="" maxlength="15" required>
+                <input type="password" name="senha" id="senha" placeholder="Senha" maxlength="30" required>
+                <div class="senha-strength">
+                    <div class="senha-strength-bar"></div>
+                </div>
+                <p id="mensagem-forca" class="mensagem-senha"></p>
+                <p>
+                    Já tem uma Conta? <a href="/login">Faça seu Login</a></p>
+                    <button type="submit">Cadastrar</button>
+            </form>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const senhaInput = document.getElementById('senha');
+    const form = document.getElementById('form-cadastro');
+    const mensagemForca = document.getElementById('mensagem-forca');
+    const strengthBar = document.querySelector('.senha-strength-bar');
+    const strengthContainer = document.querySelector('.senha-strength');
+
+    // Verificar força e validade da senha
+    senhaInput.addEventListener('input', function() {
+        const senha = this.value;
+        let forca = 0;
+        let mensagem = '';
+
+        const temAspas = senha.includes("'") || senha.includes('"');
+        const temEspaco = senha.includes(" ");
+
+        strengthContainer.className = 'senha-strength';
+        mensagemForca.className = 'mensagem-senha';
+        mensagemForca.style.display = 'none';
+
+        // Erros imediatos
+        if (temAspas || temEspaco) {
+            mensagemForca.textContent = "A senha não pode conter espaços ou aspas.";
+            mensagemForca.classList.add('erro');
+            mensagemForca.style.display = 'block';
+            return;
+        }
+
+        // Medidor de força
+        if (senha.length >= 8) forca++;
+        if (senha.match(/[a-z]/) && senha.match(/[A-Z]/)) forca++;
+        if (senha.match(/\d/)) forca++;
+        if (senha.match(/[^a-zA-Z\d]/)) forca++;
+
+        if (senha.length > 0) {
+            if (senha.length < 8) {
+                mensagem = "A senha deve ter no mínimo 8 caracteres.";
+                mensagemForca.classList.add('erro');
+            } else if (forca <= 2) {
+                strengthContainer.classList.add('fraca');
+                mensagem = "Senha fraca";
+                mensagemForca.classList.add('erro');
+            } else if (forca === 3) {
+                strengthContainer.classList.add('media');
+                mensagem = "Senha média";
+                mensagemForca.classList.add('erro');
+            } else {
+                strengthContainer.classList.add('forte');
+                mensagem = "Senha forte";
+                mensagemForca.classList.add('sucesso');
+            }
+
+            mensagemForca.textContent = mensagem;
+            mensagemForca.style.display = 'block';
+        }
+    });
+
+    // Validação final antes do envio
+    form.addEventListener('submit', function(e) {
+        const senha = senhaInput.value;
+
+        if (senha.length < 8) {
+            e.preventDefault();
+            alert("A senha deve ter pelo menos 8 caracteres.");
+            senhaInput.focus();
+            return;
+        }
+
+        if (senha.includes(" ") || senha.includes("'") || senha.includes('"')) {
+            e.preventDefault();
+            alert("A senha não pode conter espaços ou aspas.");
+            senhaInput.focus();
+        }
+    });
+});
+</script>
+
+
+
+{% endblock %}
+        
