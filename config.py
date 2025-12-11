@@ -5,7 +5,7 @@ SENHA_ADMIN = "Yan38t40"          # senha do adm (alterar para uma mais segura
 # Variável de controle de ambiente, poderá ser "local" ou "produção"
 ambiente = "local"
 
-if ambiente == "local":
+if ambiente == "produção":
 	# ------ INFORMAÇÕES DO SEU BLOG LOCAL, DEIXE COMO ESTÁ
 	HOST = "localhost"
 	USER = "root"
@@ -16,4 +16,5 @@ elif ambiente == "produção":
 	HOST =  "YanMatheus.mysql.pythonanywhere-services.com"
 	USER = "YanMatheus"
 	PASSWORD = "Y4nPIth0N74n#wh3r"
+
 	DATABASE = "YanMatheus$default"
