@@ -419,6 +419,7 @@ def perfil():
         
         if sucesso:
             session['user'] = user
+            session['foto'] = nome_foto
             flash("Dados alterados com sucesso!")
             print("✅ Perfil atualizado no BD")
         else:
@@ -453,6 +454,7 @@ if __name__ == "__main__":
 
 
 #TESTE
+
 
 
 
