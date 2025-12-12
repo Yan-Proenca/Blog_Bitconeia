@@ -17,7 +17,6 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads')
 app.secret_key = secret_key #Chave secreta
 #Configurar pasta de upload
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Rota da Página Inicial (Tudo que vem depois dos dominios)  
 @app.route('/') 
@@ -454,6 +453,7 @@ if __name__ == "__main__":
 
 
 #TESTE
+
 
 
 
