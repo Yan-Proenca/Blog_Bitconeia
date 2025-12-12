@@ -231,10 +231,11 @@ def logout():
     return redirect('/')
 
 #  Rota para cadastro de usuários
-@app.route('/cadastro', methods = ['GET','POST'])
+@app.route('/cadastro', methods=['GET','POST'])
 def cadastro():
     if request.method == 'GET':
         return render_template('cadastro.html')
+
     elif request.method == 'POST':
         nome = request.form['nome'].strip()
         usuario = request.form['user'].lower().strip()
@@ -252,12 +253,14 @@ def cadastro():
         if resultado:
             flash("Usuário cadastrado com sucesso")
             return redirect('/login')
+
         else:
             if erro.errno == 1062:
                 flash("Esse user já existe. Tente outro!")
                 return redirect('/cadastro')
             else:
                 flash("Erro ao cadastrar! Procure o suporte.")
+                return redirect('/cadastro')  # <-- corrigido
 
 
 @app.route('/usuario/status/<int:idUsuario>')
@@ -453,6 +456,7 @@ if __name__ == "__main__":
 
 
 #TESTE
+
 
 
 
