@@ -248,19 +248,19 @@ def cadastro():
         senha_hash = generate_password_hash(senha)
         foto = "placeholder.jpg"
 
-        resultado, erro = adicionar_usuario(nome, usuario, senha_hash, foto)
-
+       resultado, erro = adicionar_usuario(nome, usuario, senha_hash, foto)
+        
         if resultado:
             flash("Usuário cadastrado com sucesso")
             return redirect('/login')
-
+        
+        if erro and erro.errno == 1062:
+            flash("Esse user já existe. Tente outro!")
         else:
-            if erro.errno == 1062:
-                flash("Esse user já existe. Tente outro!")
-                return redirect('/cadastro')
-            else:
-                flash("Erro ao cadastrar! Procure o suporte.")
-                return redirect('/cadastro')  # <-- corrigido
+            flash("Erro ao cadastrar! Procure o suporte.")
+        
+        return redirect('/cadastro')
+
 
 
 @app.route('/usuario/status/<int:idUsuario>')
@@ -456,6 +456,7 @@ if __name__ == "__main__":
 
 
 #TESTE
+
 
 
 
