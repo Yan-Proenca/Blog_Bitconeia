@@ -199,7 +199,7 @@ def login():
             return redirect('/dashboard')
         
         # Verificar usuário comum
-        resultado, usuario_encontrado = verificar_usuario(usuario, senha)
+         resultado, usuario_encontrado = verificar_usuario(usuario, senha)
 
 
         
@@ -456,6 +456,7 @@ if __name__ == "__main__":
 
 
 #TESTE
+
 
 
 
