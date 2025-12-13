@@ -199,7 +199,7 @@ def login():
             return redirect('/dashboard')
         
         # Verificar usuário comum
-         resultado, usuario_encontrado = verificar_usuario(usuario, senha)
+        resultado, usuario_encontrado = verificar_usuario(usuario, senha)
 
 
         
@@ -248,7 +248,7 @@ def cadastro():
         senha_hash = generate_password_hash(senha)
         foto = "placeholder.jpg"
 
-       resultado, erro = adicionar_usuario(nome, usuario, senha_hash, foto)
+        resultado, erro = adicionar_usuario(nome, usuario, senha_hash, foto)
         
         if resultado:
             flash("Usuário cadastrado com sucesso")
@@ -456,6 +456,15 @@ if __name__ == "__main__":
 
 
 #TESTE
+
+
+
+
+
+
+
+
+
 
 
 
