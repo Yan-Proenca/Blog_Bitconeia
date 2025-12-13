@@ -76,7 +76,7 @@ def adicionar_usuario(nome, usuario, senha, foto):
             sql = "INSERT INTO usuario (nome, user, senha, foto) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (nome, usuario, senha, foto))
             conexao.commit()
-            return True, "ok"
+            return True, None
     except mysql.connector.Error as erro:
         print(f"ERRO DO BD! Erro{erro}")
         return False, erro
@@ -194,4 +194,5 @@ def editar_perfil(nome, user, nome_foto, idUsuario):
     except mysql.connector.Error as erro:
         conexao.rollback()
         print(f"ERRO DO BD! Erro{erro}")
+
         return False
