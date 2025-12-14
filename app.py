@@ -233,13 +233,13 @@ def logout():
 #  Rota para cadastro de usuários
 @app.route('/cadastro', methods=['GET','POST'])
 def cadastro():
-    if request.method == 'GET':
-        return render_template('cadastro.html')
+    try:
+        if request.method == 'GET':
+            return render_template('cadastro.html')
 
-    elif request.method == 'POST':
-        nome = request.form['nome'].strip()
-        usuario = request.form['user'].lower().strip()
-        senha = request.form['senha'].strip()
+        nome = request.form.get('nome', '').strip()
+        usuario = request.form.get('user', '').lower().strip()
+        senha = request.form.get('senha', '').strip()
 
         if not nome or not usuario or not senha:
             flash('Preencha todos os campos!')
@@ -249,17 +249,24 @@ def cadastro():
         foto = "placeholder.jpg"
 
         resultado, erro = adicionar_usuario(nome, usuario, senha_hash, foto)
-        
+
         if resultado:
-            flash("Usuário cadastrado com sucesso")
+            flash("Usuário cadastrado com sucesso!")
             return redirect('/login')
-        
-        if erro and erro.errno == 1062:
-            flash("Esse user já existe. Tente outro!")
+
+        if erro and hasattr(erro, "errno") and erro.errno == 1062:
+            flash("Esse usuário já existe!")
         else:
-            flash("Erro ao cadastrar! Procure o suporte.")
-        
+            flash("Erro ao cadastrar usuário.")
+
         return redirect('/cadastro')
+
+    except Exception as e:
+        print("❌ ERRO REAL DO CADASTRO:", e)
+        flash("Erro interno no servidor.")
+        return redirect('/cadastro')
+
+
 
 
 
@@ -447,19 +454,6 @@ def erro_interno_do_servidor(e):
 # Executar App *Sempre no Final do código*
 if __name__ == "__main__":
     app.run(debug=True)  # ,host="0.0.0.0" deixa público
-
-
-
-
-#Operadora Ternario = __V__if_condição else__F___  "Maior de idade" if idade >=18 else "menor de idade"      
-#TESTE jwp
-
-
-#TESTE
-
-
-
-
 
 
 
